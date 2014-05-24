@@ -22,6 +22,7 @@
 		201F4718193103A400B7638A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 201F46F7193103A400B7638A /* UIKit.framework */; };
 		201F4720193103A400B7638A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 201F471E193103A400B7638A /* InfoPlist.strings */; };
 		201F4722193103A400B7638A /* Map_DemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F4721193103A400B7638A /* Map_DemoTests.m */; };
+		201F472C1931049200B7638A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 201F472B1931049200B7638A /* MapKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		201F471D193103A400B7638A /* Map DemoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Map DemoTests-Info.plist"; sourceTree = "<group>"; };
 		201F471F193103A400B7638A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		201F4721193103A400B7638A /* Map_DemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Map_DemoTests.m; sourceTree = "<group>"; };
+		201F472B1931049200B7638A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				201F472C1931049200B7638A /* MapKit.framework in Frameworks */,
 				201F46F6193103A400B7638A /* CoreGraphics.framework in Frameworks */,
 				201F46F8193103A400B7638A /* UIKit.framework in Frameworks */,
 				201F46F4193103A400B7638A /* Foundation.framework in Frameworks */,
@@ -103,6 +106,7 @@
 		201F46F2193103A400B7638A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				201F472B1931049200B7638A /* MapKit.framework */,
 				201F46F3193103A400B7638A /* Foundation.framework */,
 				201F46F5193103A400B7638A /* CoreGraphics.framework */,
 				201F46F7193103A400B7638A /* UIKit.framework */,
