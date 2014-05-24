@@ -27,8 +27,31 @@
     return self;
 }
 
+// implement MKAnnotation protocol property
 - (CLLocationCoordinate2D)coordinate {
     return CLLocationCoordinate2DMake([self.lat doubleValue], [self.lng doubleValue]);
+}
+
+// implement MKAnnotation protocol property
+- (NSString *)title {
+    return self.address;
+}
+
+// implement MKAnnotation protocol property
+- (NSString *)subtitle {
+    return ([[self currencyFormatter] stringFromNumber:self.valuation]);
+}
+
+- (NSNumberFormatter *)currencyFormatter {
+    static NSNumberFormatter * formatter = nil;
+    @synchronized(formatter) {
+        if (!formatter) {
+            formatter = [[NSNumberFormatter alloc]init];
+            [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+            [formatter setMaximumFractionDigits:0];
+        }
+    }
+    return formatter;
 }
 
 @end
