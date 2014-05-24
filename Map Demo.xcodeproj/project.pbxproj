@@ -23,6 +23,8 @@
 		201F4720193103A400B7638A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 201F471E193103A400B7638A /* InfoPlist.strings */; };
 		201F4722193103A400B7638A /* Map_DemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F4721193103A400B7638A /* Map_DemoTests.m */; };
 		201F472C1931049200B7638A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 201F472B1931049200B7638A /* MapKit.framework */; };
+		201F473119310A1400B7638A /* MapDemoPermitAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F473019310A1400B7638A /* MapDemoPermitAnnotation.m */; };
+		201F473319310D4C00B7638A /* nashville-permits-2014.json in Resources */ = {isa = PBXBuildFile; fileRef = 201F473219310D4C00B7638A /* nashville-permits-2014.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,9 @@
 		201F471F193103A400B7638A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		201F4721193103A400B7638A /* Map_DemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Map_DemoTests.m; sourceTree = "<group>"; };
 		201F472B1931049200B7638A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		201F472F19310A1400B7638A /* MapDemoPermitAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapDemoPermitAnnotation.h; path = ../MapDemoPermitAnnotation.h; sourceTree = "<group>"; };
+		201F473019310A1400B7638A /* MapDemoPermitAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapDemoPermitAnnotation.m; path = ../MapDemoPermitAnnotation.m; sourceTree = "<group>"; };
+		201F473219310D4C00B7638A /* nashville-permits-2014.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "nashville-permits-2014.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +129,8 @@
 				201F4708193103A400B7638A /* Main_iPad.storyboard */,
 				201F470B193103A400B7638A /* MapDemoViewController.h */,
 				201F470C193103A400B7638A /* MapDemoViewController.m */,
+				201F472F19310A1400B7638A /* MapDemoPermitAnnotation.h */,
+				201F473019310A1400B7638A /* MapDemoPermitAnnotation.m */,
 				201F470E193103A400B7638A /* Images.xcassets */,
 				201F46FA193103A400B7638A /* Supporting Files */,
 			);
@@ -137,6 +144,7 @@
 				201F46FC193103A400B7638A /* InfoPlist.strings */,
 				201F46FF193103A400B7638A /* main.m */,
 				201F4701193103A400B7638A /* Map Demo-Prefix.pch */,
+				201F473219310D4C00B7638A /* nashville-permits-2014.json */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -240,6 +248,7 @@
 				201F470F193103A400B7638A /* Images.xcassets in Resources */,
 				201F4707193103A400B7638A /* Main_iPhone.storyboard in Resources */,
 				201F46FE193103A400B7638A /* InfoPlist.strings in Resources */,
+				201F473319310D4C00B7638A /* nashville-permits-2014.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,6 +270,7 @@
 				201F470D193103A400B7638A /* MapDemoViewController.m in Sources */,
 				201F4704193103A400B7638A /* MapDemoAppDelegate.m in Sources */,
 				201F4700193103A400B7638A /* main.m in Sources */,
+				201F473119310A1400B7638A /* MapDemoPermitAnnotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
