@@ -9,8 +9,9 @@
 #import "MapDemoViewController.h"
 @import MapKit;
 #import "MapDemoPermitAnnotation.h"
+#import "MapDemoColoredCircleMaker.h"
 
-@interface MapDemoViewController ()
+@interface MapDemoViewController () <MKMapViewDelegate>
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 
 @end
@@ -25,6 +26,7 @@
 
 - (void)setMapView:(MKMapView *)mapView {
     _mapView = mapView;
+    _mapView.delegate = self;
     [self initializeMap];
 }
 
@@ -51,6 +53,40 @@
     }
     // I could add annotations individually in the loop instead. Performance is basically the same
     [self.mapView addAnnotations:annotations];
+}
+
+// MKMapView delegate method
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    MKAnnotationView * annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:@"myAnnotationViewId"];
+    if (!annotationView) {
+        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"myAnnotationViewId"];
+    }
+    if ([annotation isKindOfClass:[MapDemoPermitAnnotation class]]) {
+        MapDemoPermitAnnotation * permitAnnotation = (MapDemoPermitAnnotation*)annotation;
+        UIColor * colorForPermitAnnotation = [self colorForPermitType:[permitAnnotation getPermitType]];
+        annotationView.image = [MapDemoColoredCircleMaker circleWithDiameter:10 andColor:colorForPermitAnnotation];
+        annotationView.canShowCallout = YES;
+        annotationView.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:[MapDemoColoredCircleMaker circleWithDiameter:40 andColor:[UIColor blackColor]]];
+        annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:
+                                                    UIButtonTypeDetailDisclosure];
+    }
+    return annotationView;
+}
+
+- (UIColor *)colorForPermitType:(int)permitType {
+    switch(permitType) {
+        case 0:
+            return [UIColor redColor];
+        case 1:
+            return [UIColor greenColor];
+        case 2:
+            return [UIColor blueColor];
+        case 3:
+            return [UIColor purpleColor];
+        default:
+            break;
+    }
+    return [UIColor magentaColor];
 }
 
 @end

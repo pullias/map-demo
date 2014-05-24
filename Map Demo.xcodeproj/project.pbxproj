@@ -25,6 +25,7 @@
 		201F472C1931049200B7638A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 201F472B1931049200B7638A /* MapKit.framework */; };
 		201F473119310A1400B7638A /* MapDemoPermitAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F473019310A1400B7638A /* MapDemoPermitAnnotation.m */; };
 		201F473319310D4C00B7638A /* nashville-permits-2014.json in Resources */ = {isa = PBXBuildFile; fileRef = 201F473219310D4C00B7638A /* nashville-permits-2014.json */; };
+		201F473919312AC800B7638A /* MapDemoColoredCircleMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F473819312AC800B7638A /* MapDemoColoredCircleMaker.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,8 @@
 		201F472F19310A1400B7638A /* MapDemoPermitAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapDemoPermitAnnotation.h; path = ../MapDemoPermitAnnotation.h; sourceTree = "<group>"; };
 		201F473019310A1400B7638A /* MapDemoPermitAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapDemoPermitAnnotation.m; path = ../MapDemoPermitAnnotation.m; sourceTree = "<group>"; };
 		201F473219310D4C00B7638A /* nashville-permits-2014.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "nashville-permits-2014.json"; sourceTree = "<group>"; };
+		201F473719312AC800B7638A /* MapDemoColoredCircleMaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDemoColoredCircleMaker.h; sourceTree = "<group>"; };
+		201F473819312AC800B7638A /* MapDemoColoredCircleMaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoColoredCircleMaker.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +134,8 @@
 				201F470C193103A400B7638A /* MapDemoViewController.m */,
 				201F472F19310A1400B7638A /* MapDemoPermitAnnotation.h */,
 				201F473019310A1400B7638A /* MapDemoPermitAnnotation.m */,
+				201F473719312AC800B7638A /* MapDemoColoredCircleMaker.h */,
+				201F473819312AC800B7638A /* MapDemoColoredCircleMaker.m */,
 				201F470E193103A400B7638A /* Images.xcassets */,
 				201F46FA193103A400B7638A /* Supporting Files */,
 			);
@@ -268,6 +273,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				201F470D193103A400B7638A /* MapDemoViewController.m in Sources */,
+				201F473919312AC800B7638A /* MapDemoColoredCircleMaker.m in Sources */,
 				201F4704193103A400B7638A /* MapDemoAppDelegate.m in Sources */,
 				201F4700193103A400B7638A /* main.m in Sources */,
 				201F473119310A1400B7638A /* MapDemoPermitAnnotation.m in Sources */,

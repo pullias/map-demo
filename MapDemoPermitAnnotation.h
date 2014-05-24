@@ -12,5 +12,6 @@
 @interface MapDemoPermitAnnotation : NSObject <MKAnnotation>
 
 - (id)initWithDict:(NSDictionary*)permitDict;
+- (int)getPermitType;
 
 @end

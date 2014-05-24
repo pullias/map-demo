@@ -13,6 +13,7 @@
 @property (nonatomic, strong) NSNumber * lng;
 @property (nonatomic, strong) NSString * address;
 @property (nonatomic, strong) NSNumber * valuation;
+@property (nonatomic, strong) NSNumber * permitType;
 @end
 
 @implementation MapDemoPermitAnnotation
@@ -24,6 +25,7 @@
     self.lng = [permitDict valueForKey:@"lng"];
     self.address = [permitDict valueForKey:@"address"];
     self.valuation = [permitDict valueForKey:@"valuation"];
+    self.permitType = [permitDict valueForKey:@"permitType"];
     return self;
 }
 
@@ -52,6 +54,10 @@
         }
     }
     return formatter;
+}
+
+- (int)getPermitType {
+    return [self.permitType intValue];
 }
 
 @end
