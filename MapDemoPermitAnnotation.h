@@ -7,11 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MapDemoPermit.h"
 @import MapKit;
 
-@interface MapDemoPermitAnnotation : NSObject <MKAnnotation>
-
-- (id)initWithDict:(NSDictionary*)permitDict;
-- (int)getPermitType;
+@interface MapDemoPermitAnnotation : MapDemoPermit <MKAnnotation>
 
 @end

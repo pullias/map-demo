@@ -26,6 +26,10 @@
 		201F473119310A1400B7638A /* MapDemoPermitAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F473019310A1400B7638A /* MapDemoPermitAnnotation.m */; };
 		201F473319310D4C00B7638A /* nashville-permits-2014.json in Resources */ = {isa = PBXBuildFile; fileRef = 201F473219310D4C00B7638A /* nashville-permits-2014.json */; };
 		201F473919312AC800B7638A /* MapDemoColoredCircleMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F473819312AC800B7638A /* MapDemoColoredCircleMaker.m */; };
+		201F473C1931389200B7638A /* MapDemoClusterer.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F473B1931389200B7638A /* MapDemoClusterer.m */; };
+		201F473F193144DC00B7638A /* MapDemoClusterAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F473E193144DC00B7638A /* MapDemoClusterAnnotation.m */; };
+		201F47421932315B00B7638A /* MapDemoPermit.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F47411932315B00B7638A /* MapDemoPermit.m */; };
+		201F474519326B5F00B7638A /* MapDemoClusterGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F474419326B5F00B7638A /* MapDemoClusterGrid.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +69,14 @@
 		201F473219310D4C00B7638A /* nashville-permits-2014.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "nashville-permits-2014.json"; sourceTree = "<group>"; };
 		201F473719312AC800B7638A /* MapDemoColoredCircleMaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDemoColoredCircleMaker.h; sourceTree = "<group>"; };
 		201F473819312AC800B7638A /* MapDemoColoredCircleMaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoColoredCircleMaker.m; sourceTree = "<group>"; };
+		201F473A1931389200B7638A /* MapDemoClusterer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDemoClusterer.h; sourceTree = "<group>"; };
+		201F473B1931389200B7638A /* MapDemoClusterer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoClusterer.m; sourceTree = "<group>"; };
+		201F473D193144DC00B7638A /* MapDemoClusterAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDemoClusterAnnotation.h; sourceTree = "<group>"; };
+		201F473E193144DC00B7638A /* MapDemoClusterAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoClusterAnnotation.m; sourceTree = "<group>"; };
+		201F47401932315B00B7638A /* MapDemoPermit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDemoPermit.h; sourceTree = "<group>"; };
+		201F47411932315B00B7638A /* MapDemoPermit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoPermit.m; sourceTree = "<group>"; };
+		201F474319326B5F00B7638A /* MapDemoClusterGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDemoClusterGrid.h; sourceTree = "<group>"; };
+		201F474419326B5F00B7638A /* MapDemoClusterGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoClusterGrid.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,8 +144,16 @@
 				201F4708193103A400B7638A /* Main_iPad.storyboard */,
 				201F470B193103A400B7638A /* MapDemoViewController.h */,
 				201F470C193103A400B7638A /* MapDemoViewController.m */,
+				201F473A1931389200B7638A /* MapDemoClusterer.h */,
+				201F473B1931389200B7638A /* MapDemoClusterer.m */,
+				201F474319326B5F00B7638A /* MapDemoClusterGrid.h */,
+				201F474419326B5F00B7638A /* MapDemoClusterGrid.m */,
+				201F473D193144DC00B7638A /* MapDemoClusterAnnotation.h */,
+				201F473E193144DC00B7638A /* MapDemoClusterAnnotation.m */,
 				201F472F19310A1400B7638A /* MapDemoPermitAnnotation.h */,
 				201F473019310A1400B7638A /* MapDemoPermitAnnotation.m */,
+				201F47401932315B00B7638A /* MapDemoPermit.h */,
+				201F47411932315B00B7638A /* MapDemoPermit.m */,
 				201F473719312AC800B7638A /* MapDemoColoredCircleMaker.h */,
 				201F473819312AC800B7638A /* MapDemoColoredCircleMaker.m */,
 				201F470E193103A400B7638A /* Images.xcassets */,
@@ -274,9 +294,13 @@
 			files = (
 				201F470D193103A400B7638A /* MapDemoViewController.m in Sources */,
 				201F473919312AC800B7638A /* MapDemoColoredCircleMaker.m in Sources */,
+				201F473F193144DC00B7638A /* MapDemoClusterAnnotation.m in Sources */,
 				201F4704193103A400B7638A /* MapDemoAppDelegate.m in Sources */,
 				201F4700193103A400B7638A /* main.m in Sources */,
 				201F473119310A1400B7638A /* MapDemoPermitAnnotation.m in Sources */,
+				201F474519326B5F00B7638A /* MapDemoClusterGrid.m in Sources */,
+				201F47421932315B00B7638A /* MapDemoPermit.m in Sources */,
+				201F473C1931389200B7638A /* MapDemoClusterer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
