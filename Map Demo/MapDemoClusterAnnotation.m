@@ -41,6 +41,24 @@
     return self.actualLocation;
 }
 
+- (NSString *)title {
+    return [self permit].address;
+}
+
+- (NSString *)subtitle {
+    return [[self currencyFormatter] stringFromNumber:[self permit].valuation];
+}
+
+- (NSNumberFormatter *)currencyFormatter {
+    static NSNumberFormatter * formatter = nil;
+    if (!formatter) {
+        formatter = [[NSNumberFormatter alloc]init];
+        [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        [formatter setMaximumFractionDigits:0];
+    }
+    return formatter;
+}
+
 - (void)setActualLocation:(CLLocationCoordinate2D)actualLocation {
     // update self.mapPoint when location is set
     _actualLocation = actualLocation;
@@ -66,6 +84,14 @@
     double dy = a.y-b.y;
     // Yay, Pythagoras!
     return sqrt((dx*dx)+(dy*dy));
+}
+
+- (NSUInteger)countOfPermits {
+    return [self.permits count];
+}
+
+- (MapDemoPermit *)permit {
+    return [self.permits firstObject];
 }
 
 @end

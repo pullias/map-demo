@@ -19,5 +19,7 @@
 - (void)addPermitAtSameLocation:(MapDemoPermit *)permit;
 
 - (double)mapPointDistanceFromAnnotation:(MapDemoClusterAnnotation *)otherAnnotation;
+- (NSUInteger)countOfPermits;
+- (MapDemoPermit *)permit;
 
 @end

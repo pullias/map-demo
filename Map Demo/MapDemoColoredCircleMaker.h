@@ -10,6 +10,7 @@
 
 @interface MapDemoColoredCircleMaker : NSObject
 
-+ circleWithDiameter:(CGFloat)diameter andColor:(UIColor*)color;
++ (UIImage *)circleWithDiameter:(CGFloat)diameter andColor:(UIColor*)color;
++ (UIImage *)circleWithColor:(UIColor*)color andNumber:(NSUInteger)number;
 
 @end
