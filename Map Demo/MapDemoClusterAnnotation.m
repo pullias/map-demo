@@ -12,6 +12,8 @@
 @property (nonatomic) CLLocationCoordinate2D actualLocation;
 @property (nonatomic, readwrite) MKMapPoint mapPoint;
 @property (nonatomic, strong) NSMutableArray * permits;
+@property (nonatomic, strong, readwrite) MapDemoClusterAnnotation * parent;
+@property (nonatomic) CLLocationCoordinate2D coordinate;
 @end
 
 @implementation MapDemoClusterAnnotation
@@ -36,11 +38,6 @@
     [self.permits addObject:permit];
 }
 
-// Implement MKAnnotation protocol
-- (CLLocationCoordinate2D)coordinate {
-    return self.actualLocation;
-}
-
 - (NSString *)title {
     return [self permit].address;
 }
@@ -63,6 +60,7 @@
     // update self.mapPoint when location is set
     _actualLocation = actualLocation;
     self.mapPoint = MKMapPointForCoordinate(actualLocation);
+    self.coordinate = self.actualLocation;
 }
 
 - (MapDemoClusterAnnotation *)newAnnotationByCombiningWith:(MapDemoClusterAnnotation *)otherAnnotation {
@@ -74,6 +72,8 @@
     double otherWeight = ((double)[otherAnnotation.permits count]) / ([self.permits count] + [otherAnnotation.permits count]);
     newAnnotation.actualLocation = CLLocationCoordinate2DMake(self.actualLocation.latitude * myWeight + otherAnnotation.actualLocation.latitude * otherWeight,
                                                           self.actualLocation.longitude * myWeight + otherAnnotation.actualLocation.longitude * otherWeight);
+    self.parent = newAnnotation;
+    otherAnnotation.parent = newAnnotation;
     return newAnnotation;
 }
 
@@ -92,6 +92,14 @@
 
 - (MapDemoPermit *)permit {
     return [self.permits firstObject];
+}
+
+- (void)moveToAlternateLocation {
+    self.coordinate = self.alternateLocation;
+}
+
+- (void)moveToActualLocation {
+    self.coordinate = self.actualLocation;
 }
 
 @end

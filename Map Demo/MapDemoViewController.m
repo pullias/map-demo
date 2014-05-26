@@ -79,8 +79,7 @@
         // recluster when zoom changes by more than 5%
         NSArray * newAnnotations = [self.clusterer annotationsFromCacheWithMinimumDistanceInMapPoints:[self clusterDistanceInMapPointsForCurrentZoom]];
         if (newAnnotations) {
-            [self.mapView removeAnnotations:[self.mapView annotations]];
-            [self.mapView addAnnotations:newAnnotations];
+            [self animateTransitionToNewClusters:newAnnotations];
         }
     }
 }
@@ -131,5 +130,124 @@
     MKMapPoint referenceMapPoint = MKMapPointForCoordinate(referenceCoordinate);
     return referenceMapPoint.x-centerMapPoint.x;
 }
+
+- (void)animateTransitionToNewClusters:(NSArray *)newClusters {
+    if ([newClusters count] == 0) {
+        return;
+    }
+    NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+    NSArray * oldClusters = [self.mapView annotations];
+    NSSet * visibleClusters = [self.mapView annotationsInMapRect:self.mapView.visibleMapRect];
+    if ([oldClusters count] == 0) {
+        // add initial clusters without animation
+        [self.mapView addAnnotations:newClusters];
+        return;
+    }
+    if ([newClusters isEqualToArray:oldClusters]) {
+        return;
+    }
+    else if ([newClusters count] > [oldClusters count]) {
+        // Zoom in, adding new children with animation from parent location
+        NSMutableArray * childrenToAddWithAnimation = [[NSMutableArray alloc] init];
+        NSMutableArray * childrenToAddWithoutAnimation = [[NSMutableArray alloc] init];
+        
+        NSMutableSet * unchangedClusters = [NSMutableSet setWithArray:oldClusters];
+        NSMutableSet * parentsToRemove = [NSMutableSet setWithSet:unchangedClusters];
+        [unchangedClusters intersectSet:[NSSet setWithArray:newClusters]];
+        // now we know which clusters are unchanged
+        [parentsToRemove minusSet:unchangedClusters];
+        // get set of children
+        NSMutableSet * childrenToAdd = [NSMutableSet setWithArray:newClusters];
+        [childrenToAdd minusSet:unchangedClusters];
+        MKMapRect visibleMapRect = [self.mapView visibleMapRect];
+        for (MapDemoClusterAnnotation * newChild in childrenToAdd) {
+            MapDemoClusterAnnotation * newChildsParent = newChild.parent;
+            // find the new child's ancestor that is in the annotation set
+            while ((newChildsParent) && (![parentsToRemove containsObject:newChildsParent])) {
+                newChildsParent = newChildsParent.parent;
+            }
+            if (newChildsParent) {
+                // child has parent which may or may not be visible
+                if ([visibleClusters containsObject:newChildsParent]) {
+                    // prepare to add child with animation from parent location on screen
+                    [newChild setAlternateLocation:newChildsParent.coordinate];
+                    [newChild moveToAlternateLocation];
+                    [childrenToAddWithAnimation addObject:newChild];
+                } else {
+                    // if the parent if offscreen but the child is onscreen, try to animate
+                    MKMapPoint newChildPoint = MKMapPointForCoordinate(newChild.coordinate);
+                    if (MKMapRectContainsPoint(visibleMapRect, newChildPoint)) {
+                        [newChild setAlternateLocation:newChildsParent.coordinate];
+                        [newChild moveToAlternateLocation];
+                        [childrenToAddWithAnimation addObject:newChild];
+                    } else {
+                        // if parent and child are off screen, don't animate
+                        [childrenToAddWithoutAnimation addObject:newChild];
+                    }
+                }
+            }
+        }
+        NSLog(@"calculating animations took %f seconds",[NSDate timeIntervalSinceReferenceDate]-start);
+        NSLog(@"there are %lu clusters currently, and there will be %lu after animation",[oldClusters count],[newClusters count]);
+        NSLog(@"there are %lu new children to animate",[childrenToAddWithAnimation count]);
+        // add new on-screen children at parent location, and remove parents before animating
+        [self.mapView addAnnotations:childrenToAddWithAnimation];
+        [self.mapView removeAnnotations:[parentsToRemove allObjects]];
+        
+        [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [childrenToAddWithAnimation makeObjectsPerformSelector:@selector(moveToActualLocation)];
+        }completion:^(BOOL finished) {
+            // add new children off screen after the animation is completed
+            [self.mapView addAnnotations:childrenToAddWithoutAnimation];
+        }];
+    } else {
+        // zoom out: animate clustered children to parent location, then remove children and add parent
+        NSMutableArray * childrenToRemoveWithAnimation = [[NSMutableArray alloc] init];
+        // note, the newClusters array likely contains many annotations outside the map rect
+        // (1) identify unchanged clusters
+        // the remaining clusters in the previous set must be children of the new clusters in the new set
+        // (2) for the child clusters in the visible rect, animate to parent location, then add parents
+        // (3) for the child clusters outside the visible rect, remove them and add parent without animation
+        for (MapDemoClusterAnnotation * visibleChild in visibleClusters) {
+            if ([newClusters containsObject:visibleChild]) {
+                // the cluster is unchanged
+            } else {
+                // traverse child's ancestry until we get the parent that is being added
+                MapDemoClusterAnnotation * newParent = visibleChild.parent;
+                while ((newParent) && ![newClusters containsObject:newParent]) {
+                    newParent = newParent.parent;
+                }
+                if (newParent) {
+                    [visibleChild setAlternateLocation:newParent.coordinate];
+                    [childrenToRemoveWithAnimation addObject:visibleChild];
+                }
+            }
+        }
+        // parentsToAdd should be all the new clusters not in old clusters
+        NSSet * oldClusterSet = [NSSet setWithArray:oldClusters];
+        NSMutableSet * parentsToAdd = [[NSMutableSet alloc] initWithArray:newClusters];
+        [parentsToAdd minusSet:oldClusterSet];
+        // children to remove without animation should be all the old clusters, minus the unchanged ones, minus the ones being animated
+        NSMutableSet * childrenToRemoveWithoutAnimation = [[NSMutableSet alloc] initWithSet:oldClusterSet];
+        [childrenToRemoveWithoutAnimation minusSet:[NSSet setWithArray:newClusters]];
+        [childrenToRemoveWithoutAnimation minusSet:[NSSet setWithArray:childrenToRemoveWithAnimation]];
+        NSLog(@"calculating animations took %f seconds",[NSDate timeIntervalSinceReferenceDate]-start);
+        [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            for (MapDemoClusterAnnotation * cluster in childrenToRemoveWithAnimation) {
+                // animate visible children to parent location
+                [cluster moveToAlternateLocation];
+            }
+        }completion:^(BOOL finished) {
+            // remove children and add off-screen parents
+            [self.mapView addAnnotations:[parentsToAdd allObjects]];
+            [self.mapView removeAnnotations:childrenToRemoveWithAnimation];
+            [self.mapView removeAnnotations:[childrenToRemoveWithoutAnimation allObjects]];
+            // reset removed children to actual location
+            [childrenToRemoveWithAnimation makeObjectsPerformSelector:@selector(moveToActualLocation)];
+        }];
+        
+    }
+}
+
 
 @end
