@@ -17,9 +17,11 @@
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (strong, nonatomic) MapDemoClusterer * clusterer;
 @property (strong, nonatomic) NSArray * permits;
+@property (strong, nonatomic) NSArray * spiderAnnotations;
 @end
 
 #define CLUSTER_DISTANCE_IN_SCREEN_POINTS 44
+#define FADED_ANNOTATION_VIEW_ALPHA 0.5
 
 @implementation MapDemoViewController
 
@@ -75,6 +77,7 @@
     double percentChange = fabs(1-newLongitudeDelta / longitudeDeltaAtLastRecluster);
     NSLog(@"The region changed by %d%% %s",(int)(100*percentChange),animated?"animated":"non-animated");
     if (percentChange > 0.05) {
+        [self unspider];
         longitudeDeltaAtLastRecluster = newLongitudeDelta;
         // recluster when zoom changes by more than 5%
         NSArray * newAnnotations = [self.clusterer annotationsFromCacheWithMinimumDistanceInMapPoints:[self clusterDistanceInMapPointsForCurrentZoom]];
@@ -96,6 +99,7 @@
     }
     if ([annotation isKindOfClass:[MapDemoClusterAnnotation class]]) {
         MapDemoClusterAnnotation * cluster = (MapDemoClusterAnnotation*)annotation;
+        annotationView.alpha = ([cluster isActive] ? 1.0 : FADED_ANNOTATION_VIEW_ALPHA);
         if ([cluster countOfPermits] == 1) {
             MapDemoPermit * permit = [cluster permit];
             annotationView.canShowCallout = YES;
@@ -260,9 +264,20 @@
             MKAnnotationView * tappedClusterView = (MKAnnotationView *)tappedView;
             if ([tappedClusterView.annotation isKindOfClass:[MapDemoClusterAnnotation class]]) {
                 MapDemoClusterAnnotation * tappedCluster = (MapDemoClusterAnnotation*)tappedClusterView.annotation;
+                if (self.spiderAnnotations) {
+                    // while spidering we should handle taps differently
+                    if (![self.spiderAnnotations containsObject:tappedCluster]) {
+                        [self unspider];
+                    }
+                }
                 // zoom to region of cluster
-                if ([tappedCluster countOfPermits] > 1) {
-                    [self zoomToClusterBounds:tappedCluster];
+                else if ([tappedCluster countOfPermits] > 1) {
+                    [self unspider];
+                    if ([tappedCluster canSpider]) {
+                        [self showSpiderViewForAnnotation:tappedCluster];
+                    } else {
+                        [self zoomToClusterBounds:tappedCluster];
+                    }
                 }
             }
         }
@@ -296,5 +311,68 @@
     }
 }
 
+- (void)showSpiderViewForAnnotation:(MapDemoClusterAnnotation *)annotationToSpider {
+    NSUInteger annotationCount = [[annotationToSpider permits] count];
+    // unless we have lots of clusters, let's place these evenly in a circle with 88px diameter
+    double spacingInRadians = M_PI*2 / annotationCount;
+    CGPoint centerPoint = [self.mapView convertCoordinate:annotationToSpider.coordinate toPointToView:self.mapView];
+    // fade annotations
+    [UIView animateWithDuration:0.4 delay:0 options:0 animations:^{
+        for (MapDemoClusterAnnotation * existingAnnotation in [self.mapView annotations]) {
+            MKAnnotationView * annotationView = [self.mapView viewForAnnotation:existingAnnotation];
+            if ([existingAnnotation isEqual:annotationToSpider]) {
+            } else {
+                // mark annotation as inactive, so if the user scrolls and viewForAnnotation is called, the proper alpha is used
+                existingAnnotation.active = NO;
+                annotationView.alpha = FADED_ANNOTATION_VIEW_ALPHA;
+            }
+        }
+    }completion:^(BOOL finished) {
+        
+    }];
+    NSMutableArray * newOverlays = [[NSMutableArray alloc] init];
+    NSMutableArray * newAnnotations = [[NSMutableArray alloc] init];
+    // increase radius when there's lots of annotations
+    int radius = (int)(88 + (annotationCount/10)*44);
+    for (int i = 0; i < annotationCount; i++) {
+        // create new MapDemoClusterAnnotations from the permit list in the spider cluster, using alternate location to arrange markers in circle
+        CGPoint spiderAnnotationPoint = CGPointMake(centerPoint.x + radius*cos(spacingInRadians*i), centerPoint.y + radius*sin(spacingInRadians*i));
+        CLLocationCoordinate2D spiderAnnotationCoordinate = [self.mapView convertPoint:spiderAnnotationPoint toCoordinateFromView:self.mapView];
+        MapDemoPermit * permit = [[annotationToSpider permits] objectAtIndex:i];
+        MapDemoClusterAnnotation * singleSpiderAnnotation = [[MapDemoClusterAnnotation alloc] initWithPermit:permit];
+        singleSpiderAnnotation.alternateLocation = spiderAnnotationCoordinate;
+        [singleSpiderAnnotation moveToAlternateLocation];
+        [newAnnotations addObject:singleSpiderAnnotation];
+        // add overlay line between spider cluster parent and individual permit marker
+        CLLocationCoordinate2D points[] = {annotationToSpider.coordinate,spiderAnnotationCoordinate};
+        MKGeodesicPolyline * lineOverlay = [MKGeodesicPolyline polylineWithCoordinates:points count:2];
+        [newOverlays addObject:lineOverlay];
+    }
+    [self.mapView addOverlays:newOverlays];
+    [self.mapView addAnnotations:newAnnotations];
+    self.spiderAnnotations = [NSArray arrayWithArray:newAnnotations];
+}
+
+- (void)unspider {
+    if (self.spiderAnnotations) {
+        [self.mapView removeOverlays:[self.mapView overlays]];
+        [self.mapView removeAnnotations:self.spiderAnnotations];
+        self.spiderAnnotations = nil;
+        // restore alpha on annotationviews
+        for (MapDemoClusterAnnotation * annotation in [self.mapView annotations]) {
+            UIView * v = [self.mapView viewForAnnotation:annotation];
+            v.alpha = 1.0;
+            annotation.active = YES;
+        }
+    }
+}
+
+// renders the lines for the spider view
+- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
+    MKPolylineRenderer * renderer = [[MKPolylineRenderer alloc]initWithPolyline:overlay];
+    renderer.strokeColor = [UIColor blackColor];
+    renderer.lineWidth = 2.0;
+    return renderer;
+}
 
 @end

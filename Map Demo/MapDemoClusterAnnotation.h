@@ -14,7 +14,9 @@
 
 @property (nonatomic, readonly) MKMapPoint mapPoint;
 @property (nonatomic, strong, readonly) MapDemoClusterAnnotation * parent;
+@property (nonatomic, strong, readonly) NSMutableArray * permits;
 @property (nonatomic) CLLocationCoordinate2D alternateLocation;
+@property (nonatomic, getter = isActive) BOOL active;
 
 - (id)initWithPermit:(MapDemoPermit *)permit;
 - (MapDemoClusterAnnotation *)newAnnotationByCombiningWith:(MapDemoClusterAnnotation *)otherAnnotation;
@@ -27,5 +29,6 @@
 - (void)moveToAlternateLocation;
 - (void)moveToActualLocation;
 - (MKCoordinateRegion)region;
+- (BOOL)canSpider;
 
 @end

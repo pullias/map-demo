@@ -22,14 +22,13 @@
 
 @implementation MapDemoClusterAnnotation
 
-//#define REFERENCE_LATITUDE 36.5 /* Used to convert meters to grid points, since a map grid gets smaller at higher latitudes */
-
 - (id)initWithPermit:(MapDemoPermit *)permit {
     self = [super init];
     self.permits = [[NSMutableArray alloc] initWithObjects:permit, nil];
     self.actualLocation = CLLocationCoordinate2DMake([permit.lat doubleValue], [permit.lng doubleValue]);
     self.minLat = self.maxLat = self.actualLocation.latitude;
     self.minLng = self.maxLng = self.actualLocation.longitude;
+    self.active = YES;
     return self;
 }
 
@@ -42,7 +41,7 @@
     copy.minLat = self.minLat;
     copy.maxLat = self.maxLat;
     copy.parent = self.parent;
-    
+    copy.active = self.active;
     return copy;
 }
 
@@ -129,6 +128,10 @@
 
 - (MKCoordinateRegion)region {
     return MKCoordinateRegionMake(CLLocationCoordinate2DMake((self.minLat+self.maxLat)/2, (self.minLng+self.maxLng)/2), MKCoordinateSpanMake(self.maxLat-self.minLat, self.maxLng-self.minLng));
+}
+
+- (BOOL)canSpider {
+    return (([self.permits count] > 1) && (self.region.span.latitudeDelta < 0.0002) && (self.region.span.longitudeDelta < 0.0002));
 }
 
 @end
