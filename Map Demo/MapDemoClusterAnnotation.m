@@ -14,6 +14,10 @@
 @property (nonatomic, strong) NSMutableArray * permits;
 @property (nonatomic, strong, readwrite) MapDemoClusterAnnotation * parent;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
+@property (nonatomic) CLLocationDegrees minLat;
+@property (nonatomic) CLLocationDegrees maxLat;
+@property (nonatomic) CLLocationDegrees minLng;
+@property (nonatomic) CLLocationDegrees maxLng;
 @end
 
 @implementation MapDemoClusterAnnotation
@@ -24,6 +28,8 @@
     self = [super init];
     self.permits = [[NSMutableArray alloc] initWithObjects:permit, nil];
     self.actualLocation = CLLocationCoordinate2DMake([permit.lat doubleValue], [permit.lng doubleValue]);
+    self.minLat = self.maxLat = self.actualLocation.latitude;
+    self.minLng = self.maxLng = self.actualLocation.longitude;
     return self;
 }
 
@@ -31,6 +37,12 @@
     MapDemoClusterAnnotation * copy = [[MapDemoClusterAnnotation allocWithZone:zone] init];
     copy.actualLocation = self.actualLocation; // sets self.mapPoint
     copy.permits = [self.permits mutableCopy];
+    copy.minLng = self.minLng;
+    copy.maxLng = self.maxLng;
+    copy.minLat = self.minLat;
+    copy.maxLat = self.maxLat;
+    copy.parent = self.parent;
+    
     return copy;
 }
 
@@ -74,6 +86,19 @@
                                                           self.actualLocation.longitude * myWeight + otherAnnotation.actualLocation.longitude * otherWeight);
     self.parent = newAnnotation;
     otherAnnotation.parent = newAnnotation;
+    // update lat/lng range
+    if (otherAnnotation.minLat < newAnnotation.minLat) {
+        newAnnotation.minLat = otherAnnotation.minLat;
+    }
+    if (otherAnnotation.maxLat > newAnnotation.maxLat) {
+        newAnnotation.maxLat = otherAnnotation.maxLat;
+    }
+    if (otherAnnotation.minLng < newAnnotation.minLng) {
+        newAnnotation.minLng = otherAnnotation.minLng;
+    }
+    if (otherAnnotation.maxLng > newAnnotation.maxLng) {
+        newAnnotation.maxLng = otherAnnotation.maxLng;
+    }
     return newAnnotation;
 }
 
@@ -100,6 +125,10 @@
 
 - (void)moveToActualLocation {
     self.coordinate = self.actualLocation;
+}
+
+- (MKCoordinateRegion)region {
+    return MKCoordinateRegionMake(CLLocationCoordinate2DMake((self.minLat+self.maxLat)/2, (self.minLng+self.maxLng)/2), MKCoordinateSpanMake(self.maxLat-self.minLat, self.maxLng-self.minLng));
 }
 
 @end

@@ -89,6 +89,10 @@
     MKAnnotationView * annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:@"myAnnotationViewId"];
     if (!annotationView) {
         annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"myAnnotationViewId"];
+        UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleAnnotationTap:)];
+        tap.cancelsTouchesInView = YES;
+        [annotationView addGestureRecognizer:tap];
+
     }
     if ([annotation isKindOfClass:[MapDemoClusterAnnotation class]]) {
         MapDemoClusterAnnotation * cluster = (MapDemoClusterAnnotation*)annotation;
@@ -249,5 +253,21 @@
     }
 }
 
+- (void)handleAnnotationTap:(UITapGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+        UIView * tappedView = [self.mapView hitTest:[recognizer locationInView:self.mapView] withEvent:nil];
+        if ([tappedView isKindOfClass:[MKAnnotationView class]]) {
+            MKAnnotationView * tappedClusterView = (MKAnnotationView *)tappedView;
+            if ([tappedClusterView.annotation isKindOfClass:[MapDemoClusterAnnotation class]]) {
+                MapDemoClusterAnnotation * tappedCluster = (MapDemoClusterAnnotation*)tappedClusterView.annotation;
+                // zoom to region of cluster
+                if ([tappedCluster countOfPermits] > 1) {
+                    [self.mapView setRegion:[tappedCluster region] animated:YES];
+                }
+            }
+        }
+    }
+    
+}
 
 @end

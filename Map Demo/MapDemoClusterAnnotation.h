@@ -26,5 +26,6 @@
 
 - (void)moveToAlternateLocation;
 - (void)moveToActualLocation;
+- (MKCoordinateRegion)region;
 
 @end
