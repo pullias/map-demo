@@ -12,12 +12,14 @@
 #import "MapDemoPermit.h"
 #import "MapDemoClusterer.h"
 #import "MapDemoClusterAnnotation.h"
+#import "MapDemoAnnotationView.h"
 
 @interface MapDemoViewController () <MKMapViewDelegate>
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (strong, nonatomic) MapDemoClusterer * clusterer;
 @property (strong, nonatomic) NSArray * permits;
 @property (strong, nonatomic) NSArray * spiderAnnotations;
+@property (strong, nonatomic) MKAnnotationView * selectedAnnotationView;
 @end
 
 #define CLUSTER_DISTANCE_IN_SCREEN_POINTS 44
@@ -89,23 +91,25 @@
 
 // MKMapView delegate method
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
-    MKAnnotationView * annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:@"myAnnotationViewId"];
+    MapDemoAnnotationView * annotationView = (MapDemoAnnotationView*)[self.mapView dequeueReusableAnnotationViewWithIdentifier:@"myAnnotationViewId"];
     if (!annotationView) {
-        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"myAnnotationViewId"];
+        annotationView = [[MapDemoAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"myAnnotationViewId"];
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleAnnotationTap:)];
         tap.cancelsTouchesInView = YES;
         [annotationView addGestureRecognizer:tap];
-
+        // disallow user selection because we are putting a large transparent view in the annotation, we use gesture recognizer to handle selection state
+        annotationView.enabled = NO;
     }
+    annotationView.canShowCallout = NO;
     if ([annotation isKindOfClass:[MapDemoClusterAnnotation class]]) {
         MapDemoClusterAnnotation * cluster = (MapDemoClusterAnnotation*)annotation;
         annotationView.alpha = ([cluster isActive] ? 1.0 : FADED_ANNOTATION_VIEW_ALPHA);
         if ([cluster countOfPermits] == 1) {
             MapDemoPermit * permit = [cluster permit];
-            annotationView.canShowCallout = YES;
             annotationView.image = [MapDemoColoredCircleMaker circleWithDiameter:44 andColor:[self colorForPermitType:[permit.permitType intValue]]];
+            annotationView.title = permit.address;
+            annotationView.subtitle = permit.description;
         } else {
-            annotationView.canShowCallout = NO;
             annotationView.image = [MapDemoColoredCircleMaker circleWithColor:[UIColor brownColor] andNumber:[cluster countOfPermits]];
         }
     }
@@ -264,10 +268,23 @@
             MKAnnotationView * tappedClusterView = (MKAnnotationView *)tappedView;
             if ([tappedClusterView.annotation isKindOfClass:[MapDemoClusterAnnotation class]]) {
                 MapDemoClusterAnnotation * tappedCluster = (MapDemoClusterAnnotation*)tappedClusterView.annotation;
+                if (self.selectedAnnotationView) {
+                    // unselect the selected annotation, and if that is the tapped annotation, return so it isn't selected again
+                    [self.selectedAnnotationView setSelected:NO animated:NO];
+                    if ([self.selectedAnnotationView isEqual:tappedClusterView]) {
+                        self.selectedAnnotationView = nil;
+                        return;
+                    }
+                    self.selectedAnnotationView = nil;
+                }
                 if (self.spiderAnnotations) {
                     // while spidering we should handle taps differently
                     if (![self.spiderAnnotations containsObject:tappedCluster]) {
                         [self unspider];
+                    } else {
+                        // select the spider view that was tapped
+                        [tappedClusterView setSelected:YES animated:NO];
+                        self.selectedAnnotationView = tappedClusterView;
                     }
                 }
                 // zoom to region of cluster
@@ -278,6 +295,9 @@
                     } else {
                         [self zoomToClusterBounds:tappedCluster];
                     }
+                } else {
+                    [tappedClusterView setSelected:YES animated:NO];
+                    self.selectedAnnotationView = tappedClusterView;
                 }
             }
         }

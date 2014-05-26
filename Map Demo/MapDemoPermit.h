@@ -14,6 +14,7 @@
 @property (nonatomic, strong) NSString * address;
 @property (nonatomic, strong) NSNumber * valuation;
 @property (nonatomic, strong) NSNumber * permitType;
+@property (nonatomic, strong) NSString * description;
 
 - (id)initWithDict:(NSDictionary*)permitDict;
 

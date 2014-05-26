@@ -30,6 +30,8 @@
 		201F473F193144DC00B7638A /* MapDemoClusterAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F473E193144DC00B7638A /* MapDemoClusterAnnotation.m */; };
 		201F47421932315B00B7638A /* MapDemoPermit.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F47411932315B00B7638A /* MapDemoPermit.m */; };
 		201F474519326B5F00B7638A /* MapDemoClusterGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F474419326B5F00B7638A /* MapDemoClusterGrid.m */; };
+		201F47481933C76500B7638A /* MapDemoAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F47471933C76500B7638A /* MapDemoAnnotationView.m */; };
+		201F474B1933C7FE00B7638A /* MapDemoCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F474A1933C7FE00B7638A /* MapDemoCalloutView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +79,10 @@
 		201F47411932315B00B7638A /* MapDemoPermit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoPermit.m; sourceTree = "<group>"; };
 		201F474319326B5F00B7638A /* MapDemoClusterGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDemoClusterGrid.h; sourceTree = "<group>"; };
 		201F474419326B5F00B7638A /* MapDemoClusterGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoClusterGrid.m; sourceTree = "<group>"; };
+		201F47461933C76500B7638A /* MapDemoAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDemoAnnotationView.h; sourceTree = "<group>"; };
+		201F47471933C76500B7638A /* MapDemoAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoAnnotationView.m; sourceTree = "<group>"; };
+		201F47491933C7FE00B7638A /* MapDemoCalloutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDemoCalloutView.h; sourceTree = "<group>"; };
+		201F474A1933C7FE00B7638A /* MapDemoCalloutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoCalloutView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +150,10 @@
 				201F4708193103A400B7638A /* Main_iPad.storyboard */,
 				201F470B193103A400B7638A /* MapDemoViewController.h */,
 				201F470C193103A400B7638A /* MapDemoViewController.m */,
+				201F47461933C76500B7638A /* MapDemoAnnotationView.h */,
+				201F47471933C76500B7638A /* MapDemoAnnotationView.m */,
+				201F47491933C7FE00B7638A /* MapDemoCalloutView.h */,
+				201F474A1933C7FE00B7638A /* MapDemoCalloutView.m */,
 				201F473A1931389200B7638A /* MapDemoClusterer.h */,
 				201F473B1931389200B7638A /* MapDemoClusterer.m */,
 				201F474319326B5F00B7638A /* MapDemoClusterGrid.h */,
@@ -299,8 +309,10 @@
 				201F4700193103A400B7638A /* main.m in Sources */,
 				201F473119310A1400B7638A /* MapDemoPermitAnnotation.m in Sources */,
 				201F474519326B5F00B7638A /* MapDemoClusterGrid.m in Sources */,
+				201F47481933C76500B7638A /* MapDemoAnnotationView.m in Sources */,
 				201F47421932315B00B7638A /* MapDemoPermit.m in Sources */,
 				201F473C1931389200B7638A /* MapDemoClusterer.m in Sources */,
+				201F474B1933C7FE00B7638A /* MapDemoCalloutView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

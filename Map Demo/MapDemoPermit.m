@@ -22,6 +22,7 @@
     self.address = [permitDict valueForKey:@"address"];
     self.valuation = [permitDict valueForKey:@"valuation"];
     self.permitType = [permitDict valueForKey:@"permitType"];
+    self.description = [permitDict valueForKey:@"description"];
     return self;
 }
 
