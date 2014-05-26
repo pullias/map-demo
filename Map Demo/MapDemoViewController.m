@@ -33,6 +33,13 @@
     // Set initial map region to Nashville
     [self.mapView setRegion:MKCoordinateRegionMake(CLLocationCoordinate2DMake(36.2, -86.8),
                                                    MKCoordinateSpanMake(0.3, 0.5))];
+    MKMapView * mapView = self.mapView; // avoid referencing self in block
+    [self.clusterer setPermitsAsync:self.permits andClusterToDistanceInMapPoints:[self clusterDistanceInMapPointsForCurrentZoom] andExecuteBlock:^(NSArray *clusters) {
+        // update mapView on main Q
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [mapView addAnnotations:clusters];
+        });
+    }];
 }
 
 - (NSArray *)permits {
@@ -70,13 +77,11 @@
     if (percentChange > 0.05) {
         longitudeDeltaAtLastRecluster = newLongitudeDelta;
         // recluster when zoom changes by more than 5%
-        [self.mapView removeAnnotations:[self.mapView annotations]];
-        [self.clusterer setPermitsAsync:self.permits andClusterToDistanceInMapPoints:[self clusterDistanceInMapPointsForCurrentZoom] andExecuteBlock:^(NSArray *clusters) {
-            // update mapView on main Q
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [mapView addAnnotations:clusters];
-            });
-        }];
+        NSArray * newAnnotations = [self.clusterer annotationsFromCacheWithMinimumDistanceInMapPoints:[self clusterDistanceInMapPointsForCurrentZoom]];
+        if (newAnnotations) {
+            [self.mapView removeAnnotations:[self.mapView annotations]];
+            [self.mapView addAnnotations:newAnnotations];
+        }
     }
 }
 

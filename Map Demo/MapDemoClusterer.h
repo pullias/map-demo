@@ -11,6 +11,7 @@
 @interface MapDemoClusterer : NSObject
 
 - (void)setPermitsAsync:(NSArray *)permits andClusterToDistanceInMapPoints:(double)distance andExecuteBlock:(void (^)(NSArray * clusters)) block;
+- (NSArray *)annotationsFromCacheWithMinimumDistanceInMapPoints:(double)distance;
 
 //- (NSArray *)setPermits:(NSArray *)permits andClusterToDistanceInMapPoints:(double)distance;
 

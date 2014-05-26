@@ -20,7 +20,16 @@
 @implementation DistanceBetweenPoints
 @end
 
+@interface ClustersAtZoomLevel : NSObject
+@property (nonatomic) double distance;
+@property (nonatomic, strong) NSArray * clusters;
+@end
+@implementation ClustersAtZoomLevel
+@end
+
 @interface MapDemoClusterer()
+@property (nonatomic, strong) NSMutableArray * clusterCache;
+@property (nonatomic) NSObject * clustering; // to lock clustercache while clustering
 @end
 
 @implementation MapDemoClusterer
@@ -28,42 +37,46 @@
 // Public API
 - (void)setPermitsAsync:(NSArray *)permits andClusterToDistanceInMapPoints:(double)distance andExecuteBlock:(void (^)(NSArray * clusters)) block {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        NSArray * clusters = [self setPermits:permits andClusterToDistanceInMapPoints:distance];
-        block(clusters);
+        @synchronized(self.clustering) {
+            NSDate * start = [NSDate dateWithTimeIntervalSinceNow:0];
+            self.clusterCache = [[NSMutableArray alloc] init]; // clear cluster cache
+            // Create list of MapDemoClusterAnnotations, combining permits at the same location
+            NSArray * clusters = [self clusterToOneMapPoint:permits];
+            [self addClusters:clusters toCacheWithDistance:1];
+            NSLog(@"after combining permits at same location, there are %lu annotations",[clusters count]);
+            
+            // Combine annotations at increasing grid size
+            // Increasing the grid size too quickly results in more distance comparisons
+            // Increasing the grid size too slowly will waste overhead creating the grid, but this is less of a problem
+            double clusterDistanceInMapPoints = 200;
+            while (clusterDistanceInMapPoints < distance) {
+                clusters = [self annotationsAfterCombiningAnnotations:clusters withinDistanceInMapPoints:clusterDistanceInMapPoints];
+                NSLog(@"at %f mapPoints, there are %lu annotations",clusterDistanceInMapPoints,[clusters count]);
+                // for this data set, it's best to increase the grid size slowly at first
+                if (clusterDistanceInMapPoints < 10000) {
+                    clusterDistanceInMapPoints += 200;
+                } else if (clusterDistanceInMapPoints < 20000) {
+                    clusterDistanceInMapPoints += 500;
+                } else {
+                    clusterDistanceInMapPoints += 1000;
+                }
+            }
+            // Finally, cluster to the requested distance
+            clusters = [self annotationsAfterCombiningAnnotations:clusters withinDistanceInMapPoints:distance];
+            NSLog(@"clustering to requested distance took %f seconds",-1*[start timeIntervalSinceNow]);
+            // Callback with result
+            block(clusters);
+            // Continue clustering in background
+            while ([clusters count] > 1) {
+                clusterDistanceInMapPoints = clusterDistanceInMapPoints*2;
+                clusters = [self annotationsAfterCombiningAnnotations:clusters withinDistanceInMapPoints:clusterDistanceInMapPoints];
+            }
+            // add the last layer of the cluster cache where there is a single cluster
+            [self addClusters:clusters toCacheWithDistance:DBL_MAX];
+            NSLog(@"complete clustering took %f seconds",-1*[start timeIntervalSinceNow]);
+        }
     });
 }
-
-// This call can take a few seconds
-- (NSArray *)setPermits:(NSArray *)permits andClusterToDistanceInMapPoints:(double)distance {
-    NSDate * start = [NSDate dateWithTimeIntervalSinceNow:0];
-    
-    // Create list of MapDemoClusterAnnotations, combining permits at the same location
-    NSArray * clusters = [self clusterToOneMapPoint:permits];
-    NSLog(@"after combining permits at same location, there are %lu annotations",[clusters count]);
-    
-    // Combine annotations at increasing grid size
-    // Increasing the grid size too quickly results in more distance comparisons
-    // Increasing the grid size too slowly will waste overhead creating the grid, but this is less of a problem
-    double clusterDistanceInMapPoints = 200;
-    while (clusterDistanceInMapPoints < distance) {
-        clusters = [self annotationsAfterCombiningAnnotations:clusters withinDistanceInMapPoints:clusterDistanceInMapPoints];
-        NSLog(@"at %f mapPoints, there are %lu annotations",clusterDistanceInMapPoints,[clusters count]);
-        // for this data set, it's best to increase the grid size slowly at first
-        if (clusterDistanceInMapPoints < 10000) {
-            clusterDistanceInMapPoints += 200;
-        } else if (clusterDistanceInMapPoints < 20000) {
-            clusterDistanceInMapPoints += 500;
-        } else {
-            clusterDistanceInMapPoints += 1000;
-        }
-    }
-    // Finally, cluster to the requested distance
-    clusters = [self annotationsAfterCombiningAnnotations:clusters withinDistanceInMapPoints:distance];
-    NSLog(@"clustering to requested distance took %f seconds",-1*[start timeIntervalSinceNow]);
-    return clusters;
-}
-
-
 
 // Cluster permits that are located at the exact same point on the map
 // (this reduces the amount of distance calculations and comparisons later)
@@ -135,6 +148,9 @@
         MapDemoClusterAnnotation * firstCluster = closestPair.pair[0];
         MapDemoClusterAnnotation * secondCluster = closestPair.pair[1];
         if ((![combinedClusterSet containsObject:firstCluster]) && (![combinedClusterSet containsObject:secondCluster])) {
+            // update the cache
+            [self addClusters:[grid allObjects] toCacheWithDistance:closestPair.distance];
+            
             [distanceBetweenPointsList removeLastObject];
             // make a new cluster that combines these
             MapDemoClusterAnnotation * firstCluster = closestPair.pair[0];
@@ -187,5 +203,32 @@
     return pairs;
 }
 
+- (void)addClusters: (NSArray *)clusters toCacheWithDistance:(double) distance {
+    // pop previous caches that have larger distances
+    ClustersAtZoomLevel * prevCachedCluster = [self.clusterCache lastObject];
+    while (prevCachedCluster.distance > distance) {
+        [self.clusterCache removeLastObject];
+        prevCachedCluster = [self.clusterCache lastObject];
+    }
+    // only store clusters when distance > 110% previous distance, to reduce memory use
+    if (distance > (prevCachedCluster.distance * 1.1)) {
+        ClustersAtZoomLevel * newCacheItem = [[ClustersAtZoomLevel alloc] init];
+        newCacheItem.distance = distance;
+        newCacheItem.clusters = clusters;
+        [self.clusterCache addObject:newCacheItem];
+    }
+}
+
+- (NSArray *)annotationsFromCacheWithMinimumDistanceInMapPoints:(double)distance {
+    @synchronized(self.clustering) {
+        // return the first cache entry where the distance is greater than the specified distance
+        for (ClustersAtZoomLevel * cacheEntry in self.clusterCache) {
+            if (cacheEntry.distance > distance) {
+                return cacheEntry.clusters;
+            }
+        }
+        return nil; // should not happen
+    }
+}
 
 @end
