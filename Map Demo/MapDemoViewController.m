@@ -262,12 +262,39 @@
                 MapDemoClusterAnnotation * tappedCluster = (MapDemoClusterAnnotation*)tappedClusterView.annotation;
                 // zoom to region of cluster
                 if ([tappedCluster countOfPermits] > 1) {
-                    [self.mapView setRegion:[tappedCluster region] animated:YES];
+                    [self zoomToClusterBounds:tappedCluster];
                 }
             }
         }
     }
-    
 }
+
+// because mapView setRegion: doesn't always zoom as far as we want, use zoomToClusterBounds
+- (void)zoomToClusterBounds: (MapDemoClusterAnnotation *)cluster {
+    // coordinate region is a center lat/long and a lat/long span
+    // mkmaprect is a mappoint origin and a width and height
+    MKCoordinateRegion regionToShow = [cluster region];
+    CLLocationCoordinate2D topLeftCoord = CLLocationCoordinate2DMake(regionToShow.center.latitude + regionToShow.span.latitudeDelta/2, regionToShow.center.longitude - regionToShow.span.longitudeDelta/2);
+    CLLocationCoordinate2D bottomRightCoord = CLLocationCoordinate2DMake(regionToShow.center.latitude - regionToShow.span.latitudeDelta/2, regionToShow.center.longitude + regionToShow.span.longitudeDelta/2);
+    MKMapPoint topLeftPoint = MKMapPointForCoordinate(topLeftCoord);
+    MKMapPoint bottomRightPoint = MKMapPointForCoordinate(bottomRightCoord);
+    MKMapRect mapRect = MKMapRectMake(topLeftPoint.x, topLeftPoint.y, bottomRightPoint.x-topLeftPoint.x, bottomRightPoint.y-topLeftPoint.y);
+    MKMapRect mapRectThatFits = [self.mapView mapRectThatFits:mapRect];
+    if ((ABS(mapRect.size.width-mapRectThatFits.size.width) < 1) || (ABS(mapRect.size.height-mapRectThatFits.size.height) < 1)) {
+        // can zoom to map rect
+        NSLog(@"zoom to map rect");
+        [self.mapView setVisibleMapRect:mapRect edgePadding:UIEdgeInsetsMake(44, 44, 44, 44) animated:YES];
+    } else {
+        // map doesn't want to zoom that far, use camera API to get to max zoom
+        NSLog(@"use camera");
+        // max zoom seems to vary, but we need to get down to 200 for some
+        // strangely, it will zoom further in portrait than landscape
+        float altitude = 160; // max zoom
+        MKMapCamera * camera = [MKMapCamera cameraLookingAtCenterCoordinate:regionToShow.center fromEyeCoordinate:regionToShow.center eyeAltitude:altitude];
+        [self.mapView setCamera:camera animated:YES];
+        
+    }
+}
+
 
 @end
