@@ -60,6 +60,9 @@
         for (NSDictionary * permitDict in permitsListOfDicts) {
             MapDemoPermit * permit = [[MapDemoPermit alloc] initWithDict:permitDict];
             [permits addObject:permit];
+            if ([permits count] >= 2000) {
+                break;
+            }
         }
         _permits = [NSArray arrayWithArray:permits];
     }
