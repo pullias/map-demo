@@ -14,6 +14,7 @@
 @end
 
 #define TRIANGLE_HEIGHT 8
+#define TEXTVIEW_HEIGHT_BEFORE_ANIMATION 20
 
 @implementation MapDemoCalloutView
 
@@ -41,14 +42,13 @@
 - (void)setAnchorPoint:(CGPoint)anchorPoint {
     _anchorPoint = anchorPoint;
     if (anchorPoint.y == 0) {
-        // when the callout is below the annotation image, move textview down to make room for the triangle
-        if (self.textView.frame.origin.y == 0) {
-            self.textView.center = CGPointMake(self.textView.center.x, self.textView.center.y + TRIANGLE_HEIGHT);
-        }
+        // position a 20px high textview below the triangle, to animate down to full height
+        self.textView.frame = CGRectMake(0, TRIANGLE_HEIGHT, self.textView.frame.size.width, TEXTVIEW_HEIGHT_BEFORE_ANIMATION);
     } else {
-        // textview should be aligned to top of callout view to make room for triangle below
-        self.textView.frame = CGRectMake(0, 0, self.textView.frame.size.width, self.textView.frame.size.height);
+        // position a 20px high textview above the triangle, to animate up to full height
+        self.textView.frame = CGRectMake(0, self.frame.size.height-TRIANGLE_HEIGHT-TEXTVIEW_HEIGHT_BEFORE_ANIMATION, self.textView.frame.size.width, TEXTVIEW_HEIGHT_BEFORE_ANIMATION);
     }
+    [self animateToFinalHeight];
 }
 
 - (void)setTitle:(NSString *)title andSubTitle:(NSString *)subTitle {
@@ -111,6 +111,23 @@
     [super willMoveToSuperview:newSuperview];
     // scroll textview to top
     [self.textView setContentOffset:CGPointMake(0, 0)];
+}
+
+- (void)animateToFinalHeight {
+    CGFloat finalTextViewHeight = self.frame.size.height - TRIANGLE_HEIGHT;
+    [UIView animateWithDuration:0.2 animations:^{
+        if (self.anchorPoint.y == 0) {
+            // animate down
+            self.textView.bounds = CGRectMake(0, 0, self.textView.frame.size.width, finalTextViewHeight);
+            self.textView.center = CGPointMake(self.textView.center.x, self.bounds.origin.y + (self.bounds.size.height + TRIANGLE_HEIGHT) / 2);
+        } else {
+            // animate up
+            self.textView.bounds = CGRectMake(0, 0, self.textView.frame.size.width, finalTextViewHeight);
+            self.textView.center = CGPointMake(self.textView.center.x, self.bounds.origin.y + (self.bounds.size.height - TRIANGLE_HEIGHT)/2);
+        }
+    } completion:^(BOOL finished) {
+        [self.textView setNeedsDisplay];
+    }];
 }
 
 @end
