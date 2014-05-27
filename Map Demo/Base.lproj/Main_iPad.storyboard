@@ -20,17 +20,37 @@
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </mapView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="s5e-gX-BqR">
+                                <rect key="frame" x="609" y="976" width="139" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <segments>
+                                    <segment title="Standard"/>
+                                    <segment title="Hybrid"/>
+                                </segments>
+                            </segmentedControl>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="EX1-RE-gCX">
+                                <rect key="frame" x="366" y="494" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" cocoaTouchSystemColor="darkTextColor"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="EX1-RE-gCX" firstAttribute="centerX" secondItem="Dso-nr-Xg3" secondAttribute="centerX" id="GIv-ZC-KIi"/>
+                            <constraint firstAttribute="bottom" secondItem="s5e-gX-BqR" secondAttribute="bottom" constant="20" symbolic="YES" id="Jgh-At-JGg"/>
                             <constraint firstItem="Dso-nr-Xg3" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="RCS-ez-sO8"/>
                             <constraint firstAttribute="bottom" secondItem="Dso-nr-Xg3" secondAttribute="bottom" id="WE2-ci-YtA"/>
                             <constraint firstItem="Dso-nr-Xg3" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="YsU-wn-mkZ"/>
                             <constraint firstAttribute="trailing" secondItem="Dso-nr-Xg3" secondAttribute="trailing" id="Zha-KX-GNr"/>
+                            <constraint firstAttribute="trailing" secondItem="s5e-gX-BqR" secondAttribute="trailing" constant="20" symbolic="YES" id="p72-Fp-J7Z"/>
+                            <constraint firstItem="EX1-RE-gCX" firstAttribute="centerY" secondItem="Dso-nr-Xg3" secondAttribute="centerY" id="z9n-pp-f6Q"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="mapTypeControl" destination="s5e-gX-BqR" id="EAd-NA-kdJ"/>
                         <outlet property="mapView" destination="Dso-nr-Xg3" id="hxo-hx-gkg"/>
+                        <outlet property="spinner" destination="EX1-RE-gCX" id="3S3-qh-nEx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

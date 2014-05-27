@@ -162,4 +162,13 @@
     [mapView setCenterCoordinate:newCenterCoord animated:YES];
 }
 
+- (void)useNewPreferredFontSize {
+    if (_calloutView) {
+        [self.calloutView removeFromSuperview];
+        self.calloutView = nil;
+        [self addSubview:self.calloutView];
+        [self positionCallout:self.calloutView];
+    }
+}
+
 @end

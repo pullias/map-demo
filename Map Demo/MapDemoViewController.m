@@ -19,7 +19,10 @@
 @property (strong, nonatomic) MapDemoClusterer * clusterer;
 @property (strong, nonatomic) NSArray * permits;
 @property (strong, nonatomic) NSArray * spiderAnnotations;
-@property (strong, nonatomic) MKAnnotationView * selectedAnnotationView;
+@property (strong, nonatomic) MapDemoAnnotationView * selectedAnnotationView;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *mapTypeControl;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+
 @end
 
 #define CLUSTER_DISTANCE_IN_SCREEN_POINTS 44
@@ -33,17 +36,32 @@
     [self initializeMap];
 }
 
+- (void)setMapTypeControl:(UISegmentedControl *)mapTypeControl {
+    _mapTypeControl = mapTypeControl;
+    _mapTypeControl.layer.cornerRadius = 5.0;
+    [_mapTypeControl addTarget:self action:@selector(handleMapTypeControlChanged) forControlEvents:UIControlEventValueChanged];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePreferredTextSizeChange) name:UIContentSizeCategoryDidChangeNotification object:nil];
+}
+
 - (void)initializeMap {
     // Set initial map region to Nashville
     [self.mapView setRegion:MKCoordinateRegionMake(CLLocationCoordinate2DMake(36.2, -86.8),
                                                    MKCoordinateSpanMake(0.3, 0.5))];
-    MKMapView * mapView = self.mapView; // avoid referencing self in block
+    __weak MapDemoViewController * weakSelf = self;
     [self.clusterer setPermitsAsync:self.permits andClusterToDistanceInMapPoints:[self clusterDistanceInMapPointsForCurrentZoom] andExecuteBlock:^(NSArray *clusters) {
         // update mapView on main Q
         dispatch_async(dispatch_get_main_queue(), ^{
-            [mapView addAnnotations:clusters];
+            [weakSelf.spinner removeFromSuperview];
+            [weakSelf.mapView addAnnotations:clusters];
         });
     }];
+    self.mapView.showsBuildings = YES;
+    self.mapView.showsPointsOfInterest = YES;
+    self.mapView.pitchEnabled = NO;
 }
 
 - (NSArray *)permits {
@@ -432,6 +450,25 @@
         [proportions addObject:proportion];
     }
     return [MapDemoColoredCircleMaker pieChartWithProportions:proportions andColors:colors andNumber:permitCount];
+}
+
+- (void)handleMapTypeControlChanged {
+    switch([self.mapTypeControl selectedSegmentIndex]) {
+        case 0:
+            self.mapView.mapType = MKMapTypeStandard;
+            break;
+        case 1:
+            self.mapView.mapType = MKMapTypeHybrid;
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)handlePreferredTextSizeChange {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.selectedAnnotationView useNewPreferredFontSize];
+    });
 }
 
 @end

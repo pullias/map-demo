@@ -20,17 +20,37 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </mapView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="zr7-hG-qfQ">
+                                <rect key="frame" x="161" y="520" width="139" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <segments>
+                                    <segment title="Standard"/>
+                                    <segment title="Hybrid"/>
+                                </segments>
+                            </segmentedControl>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="BcF-B7-Bn1">
+                                <rect key="frame" x="142" y="266" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="bottom" secondItem="zr7-hG-qfQ" secondAttribute="bottom" constant="20" symbolic="YES" id="6j7-Cp-6NK"/>
                             <constraint firstAttribute="trailing" secondItem="vHG-uR-EZa" secondAttribute="trailing" id="Biw-3I-nLb"/>
+                            <constraint firstItem="BcF-B7-Bn1" firstAttribute="centerY" secondItem="vHG-uR-EZa" secondAttribute="centerY" id="XB3-Vf-HlF"/>
+                            <constraint firstAttribute="trailing" secondItem="zr7-hG-qfQ" secondAttribute="trailing" constant="20" symbolic="YES" id="Yzl-gR-PyS"/>
                             <constraint firstItem="vHG-uR-EZa" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="ge1-qv-h6U"/>
+                            <constraint firstItem="BcF-B7-Bn1" firstAttribute="centerX" secondItem="vHG-uR-EZa" secondAttribute="centerX" id="hgN-Rn-bcK"/>
                             <constraint firstAttribute="bottom" secondItem="vHG-uR-EZa" secondAttribute="bottom" id="q2N-6O-Lz4"/>
                             <constraint firstItem="vHG-uR-EZa" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="v2d-Nu-NbH"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="mapTypeControl" destination="zr7-hG-qfQ" id="bl8-2L-PR0"/>
                         <outlet property="mapView" destination="vHG-uR-EZa" id="msO-tZ-qgW"/>
+                        <outlet property="spinner" destination="BcF-B7-Bn1" id="idR-hJ-IuV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

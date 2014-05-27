@@ -18,4 +18,5 @@
 @property (nonatomic, strong) NSString * title;
 @property (nonatomic, strong) NSString * subtitle;
 @property (nonatomic, weak) id <MapDemoAnnotationViewDelegate> delegate;
+- (void)useNewPreferredFontSize;
 @end
