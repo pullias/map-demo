@@ -19,3 +19,4 @@ iOS demo app with custom animated clustering annotations
 + v12 - position callout to fit on screen and allow callout to scroll
 + v13 - animate callout
 + v14 - add pie chart image for clusters
++ v15 - add map type control, spinner, text size notification handler
