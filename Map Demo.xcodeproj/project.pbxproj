@@ -32,6 +32,7 @@
 		201F474519326B5F00B7638A /* MapDemoClusterGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F474419326B5F00B7638A /* MapDemoClusterGrid.m */; };
 		201F47481933C76500B7638A /* MapDemoAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F47471933C76500B7638A /* MapDemoAnnotationView.m */; };
 		201F474B1933C7FE00B7638A /* MapDemoCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F474A1933C7FE00B7638A /* MapDemoCalloutView.m */; };
+		201F474E1934BBBF00B7638A /* MapDemoTextViewWithGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = 201F474D1934BBBF00B7638A /* MapDemoTextViewWithGradient.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +84,8 @@
 		201F47471933C76500B7638A /* MapDemoAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoAnnotationView.m; sourceTree = "<group>"; };
 		201F47491933C7FE00B7638A /* MapDemoCalloutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDemoCalloutView.h; sourceTree = "<group>"; };
 		201F474A1933C7FE00B7638A /* MapDemoCalloutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoCalloutView.m; sourceTree = "<group>"; };
+		201F474C1934BBBF00B7638A /* MapDemoTextViewWithGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDemoTextViewWithGradient.h; sourceTree = "<group>"; };
+		201F474D1934BBBF00B7638A /* MapDemoTextViewWithGradient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDemoTextViewWithGradient.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +161,8 @@
 				201F473B1931389200B7638A /* MapDemoClusterer.m */,
 				201F474319326B5F00B7638A /* MapDemoClusterGrid.h */,
 				201F474419326B5F00B7638A /* MapDemoClusterGrid.m */,
+				201F474C1934BBBF00B7638A /* MapDemoTextViewWithGradient.h */,
+				201F474D1934BBBF00B7638A /* MapDemoTextViewWithGradient.m */,
 				201F473D193144DC00B7638A /* MapDemoClusterAnnotation.h */,
 				201F473E193144DC00B7638A /* MapDemoClusterAnnotation.m */,
 				201F472F19310A1400B7638A /* MapDemoPermitAnnotation.h */,
@@ -303,6 +308,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				201F470D193103A400B7638A /* MapDemoViewController.m in Sources */,
+				201F474E1934BBBF00B7638A /* MapDemoTextViewWithGradient.m in Sources */,
 				201F473919312AC800B7638A /* MapDemoColoredCircleMaker.m in Sources */,
 				201F473F193144DC00B7638A /* MapDemoClusterAnnotation.m in Sources */,
 				201F4704193103A400B7638A /* MapDemoAppDelegate.m in Sources */,

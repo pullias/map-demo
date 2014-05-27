@@ -10,6 +10,7 @@
 
 @interface MapDemoCalloutView : UIView
 
+@property (nonatomic)CGPoint anchorPoint;
 - (void)setTitle:(NSString *)title andSubTitle:(NSString *)subTitle;
 
 @end

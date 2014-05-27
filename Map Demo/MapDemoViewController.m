@@ -14,7 +14,7 @@
 #import "MapDemoClusterAnnotation.h"
 #import "MapDemoAnnotationView.h"
 
-@interface MapDemoViewController () <MKMapViewDelegate>
+@interface MapDemoViewController () <MKMapViewDelegate, MapDemoAnnotationViewDelegate>
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (strong, nonatomic) MapDemoClusterer * clusterer;
 @property (strong, nonatomic) NSArray * permits;
@@ -99,6 +99,7 @@
         [annotationView addGestureRecognizer:tap];
         // disallow user selection because we are putting a large transparent view in the annotation, we use gesture recognizer to handle selection state
         annotationView.enabled = NO;
+        annotationView.delegate = self;
     }
     annotationView.canShowCallout = NO;
     if ([annotation isKindOfClass:[MapDemoClusterAnnotation class]]) {
@@ -393,6 +394,16 @@
     renderer.strokeColor = [UIColor blackColor];
     renderer.lineWidth = 2.0;
     return renderer;
+}
+
+// for annotation delegate
+- (CGFloat)statusBarHeight {
+    CGSize statusBarSize = [UIApplication sharedApplication].statusBarFrame.size;
+    CGFloat statusBarHeight = MIN(statusBarSize.width,statusBarSize.height); // it does not update when rotated
+    if (self.navigationController) {
+        statusBarHeight += self.navigationController.navigationBar.frame.size.height;
+    }
+    return statusBarHeight;
 }
 
 @end
