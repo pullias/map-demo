@@ -111,7 +111,7 @@
             annotationView.title = permit.address;
             annotationView.subtitle = permit.description;
         } else {
-            annotationView.image = [MapDemoColoredCircleMaker circleWithColor:[UIColor brownColor] andNumber:[cluster countOfPermits]];
+            annotationView.image = [self pieImageForCluster:cluster];
         }
     }
     return annotationView;
@@ -120,13 +120,13 @@
 - (UIColor *)colorForPermitType:(int)permitType {
     switch(permitType) {
         case 0:
-            return [UIColor redColor];
+            return [UIColor colorWithRed:128/255.f green:128/255.f blue:0 alpha:1]; // dark gold
         case 1:
-            return [UIColor greenColor];
+            return [UIColor colorWithRed:0 green:128/255.f blue:64/255.f alpha:1]; // dark green
         case 2:
-            return [UIColor blueColor];
+            return [UIColor colorWithRed:128/255.f green:0 blue:0 alpha:1]; // dark red
         case 3:
-            return [UIColor purpleColor];
+            return [UIColor colorWithRed:64/255.f green:0 blue:128/255.f alpha:1]; // dark purple
         default:
             break;
     }
@@ -404,6 +404,31 @@
         statusBarHeight += self.navigationController.navigationBar.frame.size.height;
     }
     return statusBarHeight;
+}
+
+- (UIImage *)pieImageForCluster:(MapDemoClusterAnnotation*)annotation {
+    NSMutableDictionary * pieColors = [[NSMutableDictionary alloc] init];
+    // count number of permits by color
+    for (MapDemoPermit * permit in [annotation permits]) {
+        UIColor * color = [self colorForPermitType:[permit.permitType intValue]];
+        NSNumber * colorCount = [pieColors objectForKey:color];
+        if (colorCount) {
+            colorCount = [NSNumber numberWithInt:(1+[colorCount intValue])];
+        } else {
+            colorCount = [NSNumber numberWithInt:1];
+        }
+        [pieColors setObject:colorCount forKey:color];
+    }
+    NSUInteger permitCount = [[annotation permits] count];
+    NSArray * colors = [pieColors allKeys];
+    NSMutableArray * proportions = [[NSMutableArray alloc] init];
+    // calculate proportion array
+    for (UIColor * color in colors) {
+        NSNumber * permitsWithThisColor = [pieColors objectForKey:color];
+        NSNumber * proportion = [NSNumber numberWithDouble:([permitsWithThisColor doubleValue]/permitCount)];
+        [proportions addObject:proportion];
+    }
+    return [MapDemoColoredCircleMaker pieChartWithProportions:proportions andColors:colors andNumber:permitCount];
 }
 
 @end

@@ -12,5 +12,6 @@
 
 + (UIImage *)circleWithDiameter:(CGFloat)diameter andColor:(UIColor*)color;
 + (UIImage *)circleWithColor:(UIColor*)color andNumber:(NSUInteger)number;
++ (UIImage *)pieChartWithProportions:(NSArray *)proportions andColors:(NSArray *)colors andNumber:(NSUInteger)number;
 
 @end
