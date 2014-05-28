@@ -3,7 +3,7 @@ map-demo
 
 iOS demo app with custom animated clustering annotations
 
-<b>tags:
+#####tags:
 + v0 - added MapView with storyboard
 + v1 - added JSON file of about 4300 permits issued in Nashville, display on map with default annotation (red pin)
 + v2 - add title and subtitle to default annotation
@@ -20,3 +20,6 @@ iOS demo app with custom animated clustering annotations
 + v13 - animate callout
 + v14 - add pie chart image for clusters
 + v15 - add map type control, spinner, text size notification handler
+
+Map Demo 2
+https://gist.github.com/pullias/ab5bc704177618f4fcc2
